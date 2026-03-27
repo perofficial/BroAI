@@ -1,0 +1,11 @@
+lite:
+  noise_level: 0.1
+  tone: casual
+
+balanced:
+  noise_level: 0.2
+  tone: casual
+
+aggressive:
+  noise_level: 0.35
+  tone: genz

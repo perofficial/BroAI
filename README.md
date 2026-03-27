@@ -1,362 +1,128 @@
-![Python](https://img.shields.io/badge/python-3.8+-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-active-success)
+# BroAI – Human-like Text Generator for Synthetic Data
 
-# 🧠 Humanizer AI
-
-**Control how AI sounds. Make it human.**
-
-Humanizer AI is a modular pipeline designed to transform LLM outputs into more realistic, human-like language — and generate synthetic user data for testing, training, and evaluation.
+BroAI è una libreria Python progettata per generare **testo sintetico “human-like”** partendo da frasi o query di input. Permette di creare dataset realistici per training AI, test di chatbot, simulazioni utenti o data augmentation.
 
 ---
 
-# 🚀 Why this exists
+## ⚡ Features
 
-Modern LLMs are powerful, but they have a problem:
-
-> They sound too perfect.
-
-Real users:
-
-* make typos
-* write incomplete sentences
-* use slang
-* behave inconsistently
-
-This gap creates issues in:
-
-* chatbot testing
-* AI robustness
-* real-world deployment
-
-👉 Humanizer AI fills this gap.
+* Trasforma testo in versioni più umane (“humanized”) con livelli di rumore e stili diversi
+* Presets configurabili (`lite`, `balanced`, `aggressive`)
+* Salvataggio automatico dei dataset generati in CSV (`output/synthetic_dataset.csv`)
+* Facile integrazione con librerie per agenti AI come LangChain e LangGraph
+* Open source: dizionari e presets modificabili
 
 ---
 
-# ✨ What you can do with it
-
-## 1. 🎭 Transform AI output style
-
-Convert clean LLM responses into:
-
-* casual tone
-* formal tone
-* Gen-Z style
-
----
-
-## 2. 🧠 Inject realistic human noise
-
-Simulate real user behavior:
-
-* typos
-* dropped words
-* filler expressions
-* imperfect grammar
-
----
-
-## 3. 🧪 Generate synthetic datasets
-
-Create realistic user queries for:
-
-* chatbot testing
-* AI training
-* edge case simulation
-
----
-
-## 4. 👤 Simulate different user personas
-
-Out-of-the-box personas:
-
-* impatient users
-* confused users
-* Gen-Z users
-* formal users
-
----
-
-# 🏗️ Project Structure
+## 📂 Struttura della repo
 
 ```
-humanizer-ai/
-│
-├── humanizer/        → Core pipeline
-├── dictionaries/     → Open-source language patterns
-├── synthetic/        → Dataset generation tools
-├── demo/             → CLI demo
-├── data/             → Sample input data
-├── output/           → Generated datasets
-│
-├── private/          → (ignored) advanced configs
-├── configs/          → (ignored)
-├── experiments/      → (ignored)
+BroAI/
+├── configs/               # Presets configurabili
+│   └── presets.py
+├── data/                  # Input queries
+│   └── clean_queries.txt
+├── dictionaries/          # Dizionari slang, typo, grammar
+├── humanizer/             # Core library
+├── demo/                  # CLI demo
+├── output/                # Salvataggi CSV
+├── experiments/           # Test e tuning parametri
+├── run.py                 # Script principale
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-# ⚙️ Installation
+## 🚀 Installazione
 
 ```bash
-git clone https://github.com/your-username/humanizer-ai.git
-cd humanizer-ai
+git clone https://github.com/<tuo-username>/BroAI.git
+cd BroAI
+python -m venv venv
+source venv/bin/activate  # macOS/Linux
+# venv\Scripts\activate   # Windows
 pip install -r requirements.txt
 ```
 
 ---
 
-# ▶️ Quick Start
+## ▶️ Uso
 
-## 🔹 Basic usage
-
-```python
-from humanizer import humanize
-
-text = "I am going to the store and I cannot find what you are looking for"
-
-output = humanize(
-    text,
-    tone="genz",
-    noise_level=0.2
-)
-
-print(output)
-```
-
----
-
-## 🔹 CLI Demo
-
-```bash
-python demo/demo_cli.py
-```
-
-Type text and see it transformed in real time.
-
----
-
-## 🔹 Generate synthetic dataset
+1. Inserisci le frasi di input in `data/clean_queries.txt`
+2. Esegui lo script principale:
 
 ```bash
 python run.py
 ```
 
-This will create:
+3. Troverai il CSV generato in:
 
-```
+```bash
 output/synthetic_dataset.csv
 ```
 
 ---
 
-# 🧪 Synthetic Data Example
+## ⚙️ Presets
 
-### Input
-
-```
-How can I reset my password?
-```
-
-### Output
-
-```
-how can i reset my passwrod uh
-how reset password pls
-yo how i reset this
-```
-
----
-
-# 🧠 How it works
-
-Pipeline:
-
-```
-Input text
-   ↓
-Style Transformation
-   ↓
-Noise Injection
-   ↓
-Output
-```
-
----
-
-# 🧩 Configuration
-
-You can control behavior via parameters:
+Puoi modificare i parametri in `configs/presets.py`:
 
 ```python
-humanize(
-    text,
-    tone="casual",      # casual | formal | genz
-    noise_level=0.1,    # 0 → clean, 1 → very noisy
-    seed=42             # reproducibility
-)
+PRESETS = {
+    "lite": {"tone": "casual", "noise_level": 0.12},
+    "balanced": {"tone": "casual", "noise_level": 0.2},
+    "aggressive": {"tone": "genz", "noise_level": 0.25}
+}
 ```
 
----
-
-# 🏢 Business Use Cases
-
-## 🤖 1. Chatbot Testing
-
-Simulate real users interacting with your chatbot:
-
-* messy inputs
-* incomplete queries
-* real-world behavior
-
-👉 improves robustness before deployment
+* `tone`: stile della frase
+* `noise_level`: quantità di errori/variazioni introdotte
 
 ---
 
-## 📊 2. Synthetic Data Generation
+## 🧪 Testing & Valutazione
 
-Generate datasets without:
+Puoi valutare il realismo delle frasi con `experiments/evaluate_output.py`.
+Target score: **0.15–0.25** → realistico.
 
-* collecting user data
-* privacy concerns
-
-👉 ideal for GDPR-safe pipelines
-
----
-
-## 🧪 3. AI Evaluation & Benchmarking
-
-Stress-test models with:
-
-* noisy inputs
-* edge cases
-* broken intent queries
+* Score troppo basso → testo troppo perfetto
+* Score troppo alto → testo troppo rumoroso
 
 ---
 
-## 💬 4. Customer Support AI
+## 📝 Contribuire
 
-Make chatbot responses:
-
-* less robotic
-* more natural
-* more engaging
+1. Forka il progetto
+2. Aggiungi nuovi dizionari o presets
+3. Apri una Pull Request
 
 ---
 
-## 📈 5. Marketing & Copy Testing
+## 💡 Use Cases Aziendali
 
-Generate multiple human-like variants:
-
-* A/B testing
-* tone experimentation
-* personalization
-
----
-
-# 🌍 Open Source vs Private Core
-
-This repository includes:
-
-* ✅ dictionaries (typos, slang, grammar)
-* ✅ base transformation pipeline
-* ✅ synthetic data generator
-
-Advanced features (not included):
-
-* 🔒 optimized distributions
-* 🔒 persona modeling engine
-* 🔒 production configs
+* Generazione di dataset per AI conversazionali
+* Test e validazione di chatbot
+* Data augmentation per NLP
+* Simulazione utenti realistica
 
 ---
 
-# 🤝 Contributing
+## 🔒 Note
 
-We welcome contributions!
-
-## Ways to contribute:
-
-### 🧠 1. Add language patterns
-
-* typos
-* slang
-* abbreviations
-
-Example:
-
-```
-dictionaries/typos/english.json
-```
+* Output CSV e dati sensibili **non vanno tracciati su GitHub**
+* Dizionari e presets sono open source e modificabili
 
 ---
 
-### 🌍 2. Add new languages
+## 🚀 Next Steps
 
-Create new files:
+Per una demo completa o landing freemium:
 
-```
-dictionaries/typos/spanish.json
-```
-
----
-
-### 👤 3. Add personas
-
-Extend:
-
-```
-synthetic/personas.py
-```
+* Usa `demo/demo_cli.py` per provare preset in tempo reale
+* Valuta output con `experiments/evaluate_output.py`
+* Salva i dataset generati in `output/` per training o test
 
 ---
 
-### ⚙️ 4. Improve pipeline
-
-* better noise strategies
-* new transformations
-* performance improvements
-
----
-
-## Contribution Guidelines
-
-* Keep patterns realistic
-* Avoid random/noise-only changes
-* Prefer real-world examples
-
----
-
-# 📌 Roadmap
-
-* [ ] Advanced persona engine
-* [ ] LLM-based style transformer
-* [ ] API version (SaaS)
-* [ ] Web demo (UI)
-* [ ] Dataset benchmarking tools
-
----
-
-# 💡 Vision
-
-Humanizer AI aims to become:
-
-> The standard layer for making AI outputs behave like real humans.
-
----
-
-# ⭐ Support
-
-If you find this useful:
-
-* star the repo
-* contribute patterns
-* share it with others
-
----
-
-# 📜 License
-
-MIT License
-
-```
-```
+**BroAI** ti permette di trasformare frasi piatte in dataset **realistici, diversificati e pronti per l’uso aziendale o per ricerca NLP**.

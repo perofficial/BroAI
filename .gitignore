@@ -1,28 +1,35 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
+*.pyd
+*.pyc
+*.pkl
 
-# Virtual env
+# Virtual environments
 venv/
-.env
+env/
+.venv/
+.env/
 
-# Build
-build/
-dist/
-*.egg-info/
+# IDE/Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-# Output
-output/*
-!output/.gitkeep
-
-# Private
-private/
-experiments/
-configs/production.yaml
-
-# OS
-.DS_Store
+# Data outputs
+output/
+*.csv
+*.txt
 
 # Logs
 *.log
+
+# MacOS
+.DS_Store
+
+# Optional: model weights, big files
+models/
+*.pt
+*.bin

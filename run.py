@@ -1,6 +1,7 @@
 import os
 import csv
 from humanizer import humanize
+from configs.presets import PRESETS
 
 INPUT_FILE = "data/clean_queries.txt"
 OUTPUT_FILE = "output/synthetic_dataset.csv"
@@ -13,9 +14,9 @@ def load_queries(path):
 
 def generate_variations(text):
     return [
-        humanize(text, tone="casual", noise_level=0.1),
-        humanize(text, tone="genz", noise_level=0.2),
-        humanize(text, tone="casual", noise_level=0.3),
+        humanize(text, **PRESETS["lite"]),
+        humanize(text, **PRESETS["balanced"]),
+        humanize(text, **PRESETS["aggressive"]),
     ]
 
 
