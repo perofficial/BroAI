@@ -1,0 +1,25 @@
+profiles:
+
+  low_noise:
+    level: 0.05
+    typo_weight: 0.6
+    filler_weight: 0.2
+    drop_weight: 0.2
+
+  medium_noise:
+    level: 0.15
+    typo_weight: 0.5
+    filler_weight: 0.3
+    drop_weight: 0.2
+
+  high_noise:
+    level: 0.35
+    typo_weight: 0.4
+    filler_weight: 0.4
+    drop_weight: 0.2
+
+  chaotic_user:
+    level: 0.5
+    typo_weight: 0.3
+    filler_weight: 0.5
+    drop_weight: 0.2

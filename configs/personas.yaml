@@ -1,0 +1,27 @@
+personas:
+
+  impatient_user:
+    tone: casual
+    noise_level: 0.3
+    behavior:
+      short_sentences: true
+      drop_probability: 0.4
+
+  confused_user:
+    tone: casual
+    noise_level: 0.4
+    behavior:
+      repetition: true
+      filler_rate: 0.5
+
+  genz_user:
+    tone: genz
+    noise_level: 0.2
+    behavior:
+      slang_boost: true
+
+  formal_user:
+    tone: formal
+    noise_level: 0.05
+    behavior:
+      strict_grammar: true
