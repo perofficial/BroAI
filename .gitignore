@@ -33,3 +33,6 @@ output/
 models/
 *.pt
 *.bin
+
+# Config di produzione
+configs/production.yaml
