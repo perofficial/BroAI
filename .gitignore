@@ -35,4 +35,4 @@ models/
 *.bin
 
 # Config di produzione
-configs/production.yaml
+#configs/production.yaml
