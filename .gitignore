@@ -35,4 +35,8 @@ models/
 *.bin
 
 # Config di produzione
+<<<<<<< HEAD
 configs/production.yaml
+=======
+configs/production.yaml
+>>>>>>> 5dc086c30faf5b117d93a9cc4e04f441568dda9c
