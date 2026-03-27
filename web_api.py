@@ -1,61 +1,71 @@
-# web_api.py
-# FastAPI server per collegare BroAI Humanizer al web
+"""
+BroAI FastAPI server — connects the humanizer pipeline to the web.
+Run with: uvicorn web_api:app --reload
+"""
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 import yaml
 import os
-from humanizer import HumanizerPipeline
+from humanizer import humanize, HumanizerPipeline
 
-# --- 1️⃣ Caricamento configurazione production.yaml ---
-CONFIG_DIR = os.path.join(os.path.dirname(__file__), 'config')
-PROD_CONFIG_PATH = os.path.join(CONFIG_DIR, 'production.yaml')
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config", "production.yaml")
 
-if not os.path.exists(PROD_CONFIG_PATH):
-    raise RuntimeError(f'File di configurazione {PROD_CONFIG_PATH} non trovato.')
+if not os.path.exists(CONFIG_PATH):
+    raise RuntimeError(f"Config not found: {CONFIG_PATH}")
 
-with open(PROD_CONFIG_PATH, 'r') as f:
-    config = yaml.safe_load(f)
+with open(CONFIG_PATH, "r") as f:
+    config = yaml.safe_load(f) or {}
 
-# Controllo se il config è valido
-if config is None:
-    raise RuntimeError(f'File di configurazione {PROD_CONFIG_PATH} è vuoto o malformato')
-
-print("✅ Config caricata correttamente:")
-for section, values in config.items():
-    print(f" - {section}: {values}")
-
-# --- 2️⃣ Inizializzazione pipeline Humanizer ---
-pipeline = HumanizerPipeline(
-    tone=config.get('pipeline', {}).get('tone', 'dynamic'),
-    noise_level=config.get('pipeline', {}).get('noise_level', 'adaptive'),
-    typo_distribution=config.get('noise', {}).get('typo_distribution', {}),
-    contextual_noise=config.get('noise', {}).get('contextual_noise', False),
-    adaptive_noise=config.get('noise', {}).get('adaptive_noise', False),
-    persona_adaptation=config.get('style', {}).get('persona_adaptation', False),
-    memory_based_variation=config.get('style', {}).get('memory_based_variation', False)
+app = FastAPI(
+    title="BroAI Humanizer API",
+    description="Transform flat AI text into realistic human-like output.",
+    version="0.1.0",
 )
 
-# --- 3️⃣ Creazione FastAPI app ---
-app = FastAPI(title="BroAI Humanizer API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Input schema
-class InputText(BaseModel):
-    text: str
 
-# --- 4️⃣ Endpoint principale ---
-@app.post("/humanize")
-def humanize_text(input: InputText):
-    if not input.text.strip():
-        raise HTTPException(status_code=400, detail="Input vuoto")
+class HumanizeRequest(BaseModel):
+    text: str = Field(..., min_length=1, max_length=5000)
+    tone: str = Field(default="casual", pattern="^(casual|formal|genz)$")
+    noise_level: float = Field(default=0.2, ge=0.0, le=1.0)
+    seed: int | None = Field(default=None)
 
-    humanized = pipeline.humanize([input.text])
-    return {"humanized_text": humanized[0]}
 
-# --- 5️⃣ Endpoint di test rapido ---
+class HumanizeResponse(BaseModel):
+    original: str
+    humanized: str
+    tone: str
+    noise_level: float
+
+
+@app.post("/humanize", response_model=HumanizeResponse)
+def humanize_text(req: HumanizeRequest):
+    result = humanize(
+        text=req.text,
+        tone=req.tone,
+        noise_level=req.noise_level,
+        seed=req.seed,
+    )
+    return HumanizeResponse(
+        original=req.text,
+        humanized=result,
+        tone=req.tone,
+        noise_level=req.noise_level,
+    )
+
+
 @app.get("/health")
 def health_check():
     return {
         "status": "ok",
-        "pipeline_tone": config.get('pipeline', {}).get('tone', 'dynamic')
+        "default_tone": config.get("pipeline", {}).get("tone", "casual"),
+        "default_noise": config.get("pipeline", {}).get("noise_level", 0.2),
     }

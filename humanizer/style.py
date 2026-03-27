@@ -1,4 +1,5 @@
 import os
+import random
 from .utils.dictionary_loader import load_dictionary
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -14,37 +15,35 @@ CONTRACTIONS = load_dictionary(
 
 
 def apply_style(text: str, tone: str) -> str:
-
     if tone == "genz":
         return _genz(text)
-
     elif tone == "formal":
         return _formal(text)
-
     elif tone == "casual":
         return _casual(text)
-
     return text
 
 
 def _genz(text: str) -> str:
     words = text.split()
-
-    for i in range(len(words)):
-        w = words[i].lower()
+    for i, word in enumerate(words):
+        w = word.lower().rstrip("?.,!")
+        punct = word[len(w):]
         if w in GENZ_DICT:
-            words[i] = GENZ_DICT[w][0]
-
+            replacement = random.choice(GENZ_DICT[w])  # FIX: was always [0]
+            words[i] = replacement + punct
     return " ".join(words)
 
 
 def _formal(text: str) -> str:
-    for k, v in CONTRACTIONS.items():
-        text = text.replace(v, k)
+    # Expand contractions for formal tone
+    for contracted, expanded in CONTRACTIONS.items():
+        text = text.replace(contracted, expanded)
     return text
 
 
 def _casual(text: str) -> str:
-    for k, v in CONTRACTIONS.items():
-        text = text.replace(k, v)
+    # Apply contractions for casual tone
+    for expanded, contracted in CONTRACTIONS.items():
+        text = text.replace(expanded, contracted)
     return text

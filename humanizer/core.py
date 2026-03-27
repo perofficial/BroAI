@@ -11,21 +11,17 @@ def humanize(
     Main public API.
 
     Args:
-        text (str): input text
+        text (str): input text to humanize
         tone (str): casual | formal | genz
-        noise_level (float): 0.0 → clean, 1.0 → very noisy
-        seed (int): for reproducibility
+        noise_level (float): 0.0 = clean, 1.0 = very noisy
+        seed (int): optional seed for reproducibility
 
     Returns:
-        str: transformed text
+        str: humanized text
     """
-
     pipeline = HumanizerPipeline({
-        "pipeline": {
-            "tone": tone,
-            "noise_level": noise_level,
-            "seed": seed
-        }
+        "tone": tone,
+        "noise_level": noise_level,
+        "seed": seed,
     })
-
     return pipeline.run(text)

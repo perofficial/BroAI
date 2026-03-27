@@ -7,30 +7,40 @@ name = "humanizer-ai"
 version = "0.1.0"
 description = "Control how AI sounds. Make LLM outputs more human."
 authors = [
-    { name="Your Name", email="your@email.com" }
+    { name = "Matteo Peroni", email = "your@email.com" }
 ]
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
 
 dependencies = [
-    "pyyaml>=6.0"
+    "pyyaml>=6.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "pydantic>=2.0",
 ]
 
-keywords = ["ai", "nlp", "llm", "synthetic-data", "chatbot", "text-processing"]
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27.0",
+]
+
+keywords = ["ai", "nlp", "llm", "synthetic-data", "chatbot", "text-processing", "humanizer"]
 
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent"
+    "Operating System :: OS Independent",
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-username/humanizer-ai"
-Repository = "https://github.com/your-username/humanizer-ai"
+Homepage = "https://github.com/your-username/BroAI"
+Repository = "https://github.com/your-username/BroAI"
 
-[tool.setuptools]
-packages = ["humanizer"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["humanizer*", "configs*", "demo*", "experiments*"]
 
 [project.scripts]
 humanizer-cli = "demo.demo_cli:main"

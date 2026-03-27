@@ -1,14 +1,14 @@
 PRESETS = {
     "lite": {
         "tone": "casual",
-        "noise_level": 0.5
+        "noise_level": 0.10,
     },
     "balanced": {
         "tone": "casual",
-        "noise_level": 0.5
+        "noise_level": 0.20,
     },
     "aggressive": {
         "tone": "genz",
-        "noise_level": 0.9
-    }
+        "noise_level": 0.35,
+    },
 }

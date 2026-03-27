@@ -1,22 +1,21 @@
 personas:
-
   impatient_user:
     tone: casual
-    noise_level: 0.3
+    noise_level: 0.30
     behavior:
       short_sentences: true
       drop_probability: 0.4
 
   confused_user:
     tone: casual
-    noise_level: 0.4
+    noise_level: 0.40
     behavior:
       repetition: true
       filler_rate: 0.5
 
   genz_user:
     tone: genz
-    noise_level: 0.2
+    noise_level: 0.20
     behavior:
       slang_boost: true
 

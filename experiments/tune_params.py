@@ -1,65 +1,41 @@
-import random
+"""
+Grid-search over tone × noise_level combinations to find the best params.
+Run: python -m experiments.tune_params
+"""
 from humanizer import humanize
+from experiments.evaluate_output import evaluate_text
 
 TEXTS = [
     "How can I reset my password?",
     "I cannot access my account",
     "Where is my order?",
-    "I want to cancel my subscription"
+    "I want to cancel my subscription",
 ]
 
-noise_levels = [0.1, 0.3, 0.5, 0.7, 0.9]
-tones = ["casual", "genz"]
+NOISE_LEVELS = [0.05, 0.10, 0.20, 0.35, 0.50]
+TONES = ["casual", "genz", "formal"]
+SAMPLES_PER_COMBO = 5
 
 
-def evaluate(text):
-    words = text.split()
+def run_grid():
+    results = []
 
-    typo_like = ["teh", "pls", "u", "r", "ur", "msg"]
-    
-    score = 0
+    for tone in TONES:
+        for noise in NOISE_LEVELS:
+            outputs = [
+                humanize(text, tone=tone, noise_level=noise)
+                for text in TEXTS
+                for _ in range(SAMPLES_PER_COMBO)
+            ]
+            scores = [evaluate_text(o) for o in outputs]
+            avg = sum(scores) / len(scores)
+            results.append({"tone": tone, "noise": noise, "score": avg})
 
-    for w in words:
-        w_clean = w.lower()
-
-        # typo da dizionario
-        if w_clean in typo_like:
-            score += 1
-
-        # typo "random" (parole strane)
-        elif len(w_clean) > 4 and not w_clean.isalpha():
-            score += 0.5
-
-        # parola modificata (tipo swap lettere)
-        elif any(char.isdigit() for char in w_clean):
-            score += 0.5
-
-    return score / max(len(words), 1)
+    print("\n=== TUNING RESULTS ===\n")
+    for r in sorted(results, key=lambda x: abs(x["score"] - 0.20)):
+        flag = " ✓" if 0.15 <= r["score"] <= 0.25 else ""
+        print(f"tone={r['tone']:<8} noise={r['noise']:.2f} → score={r['score']:.3f}{flag}")
 
 
-results = []
-
-for tone in tones:
-    for n in noise_levels:
-
-        outputs = []
-
-        for text in TEXTS:
-            for _ in range(5):
-                out = humanize(text, tone=tone, noise_level=n)
-                outputs.append(out)
-
-        scores = [evaluate(o) for o in outputs]
-        avg_score = sum(scores) / len(scores)
-
-        results.append({
-            "tone": tone,
-            "noise": n,
-            "score": avg_score
-        })
-
-
-print("\n=== RESULTS ===\n")
-
-for r in results:
-    print(f"tone={r['tone']} | noise={r['noise']} → score={round(r['score'], 3)}")
+if __name__ == "__main__":
+    run_grid()

@@ -1,11 +1,10 @@
 import json
+import os
 
-def load_dictionary(path):
-    print("\n🔍 Loading file:", path)
 
+def load_dictionary(path: str) -> dict:
+    """Load a JSON dictionary from disk. Returns empty dict if file not found."""
+    if not os.path.exists(path):
+        return {}
     with open(path, "r", encoding="utf-8") as f:
-        content = f.read()
-
-        print("📄 Content preview:", repr(content[:50]))
-
-        return json.loads(content)
+        return json.load(f)

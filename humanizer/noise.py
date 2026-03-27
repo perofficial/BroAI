@@ -9,48 +9,45 @@ TYPO_DICT = load_dictionary(
     os.path.join(BASE_PATH, "../dictionaries/typos/english.json")
 )
 
-FILLERS = ["uh", "um", "like", "you know"]
+FILLERS = ["uh", "um", "like", "you know", "i mean", "kinda"]
 
 
-def inject_noise(text: str, level: float = 0.1, seed=None) -> str:
+def inject_noise(text: str, level: float = 0.1, seed: int = None) -> str:
     if seed is not None:
         random.seed(seed)
 
     words = text.split()
 
-    for i in range(len(words)):
-
+    result = []
+    for word in words:
         if random.random() < level:
-
             action = weighted_choice([
-                ("typo", 0.5),
+                ("typo",   0.5),
                 ("filler", 0.3),
-                ("drop", 0.2)
+                ("drop",   0.2),
             ])
-
             if action == "typo":
-                words[i] = apply_typo(words[i])
-
+                result.append(apply_typo(word))
             elif action == "filler":
-                words[i] += " " + random.choice(FILLERS)
-
+                result.append(word)
+                result.append(random.choice(FILLERS))
             elif action == "drop":
-                words[i] = ""
+                pass  # word dropped intentionally
+        else:
+            result.append(word)
 
-    return " ".join(filter(None, words))
+    return " ".join(result)
 
 
 def apply_typo(word: str) -> str:
-    lower = word.lower()
-
+    lower = word.lower().rstrip("?.,!")
+    punct = word[len(lower):]
     if lower in TYPO_DICT:
-        return random.choice(TYPO_DICT[lower])
-
-    # fallback: small swap typo
-    if len(word) > 3:
-        i = random.randint(0, len(word) - 2)
-        word = list(word)
-        word[i], word[i + 1] = word[i + 1], word[i]
-        return "".join(word)
-
+        return random.choice(TYPO_DICT[lower]) + punct
+    # fallback: swap two adjacent characters
+    if len(lower) > 3:
+        i = random.randint(0, len(lower) - 2)
+        chars = list(lower)
+        chars[i], chars[i + 1] = chars[i + 1], chars[i]
+        return "".join(chars) + punct
     return word

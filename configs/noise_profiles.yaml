@@ -1,5 +1,4 @@
 profiles:
-
   low_noise:
     level: 0.05
     typo_weight: 0.6

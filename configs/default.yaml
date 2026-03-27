@@ -1,0 +1,13 @@
+pipeline:
+  tone: casual
+  noise_level: 0.20
+  seed: null
+
+noise:
+  typo_weight: 0.5
+  filler_weight: 0.3
+  drop_weight: 0.2
+
+output:
+  format: csv
+  path: output/synthetic_dataset.csv

@@ -1,18 +1,21 @@
 import random
 
 
-def weighted_choice(choices):
+def weighted_choice(choices: list) -> str:
     """
-    choices = [("typo", 0.5), ("filler", 0.3), ...]
-    """
+    Select a choice based on weights.
 
+    Args:
+        choices: list of (value, weight) tuples
+
+    Returns:
+        selected value (str)
+    """
     total = sum(weight for _, weight in choices)
     r = random.uniform(0, total)
-    upto = 0
-
+    upto = 0.0
     for choice, weight in choices:
-        if upto + weight >= r:
-            return choice
         upto += weight
-
+        if r <= upto:
+            return choice
     return choices[-1][0]
