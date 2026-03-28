@@ -10,6 +10,17 @@ import yaml
 import os
 from humanizer import humanize, HumanizerPipeline
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config", "production.yaml")
 
 if not os.path.exists(CONFIG_PATH):
