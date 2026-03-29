@@ -10,7 +10,10 @@ import yaml
 import os
 from humanizer import humanize, HumanizerPipeline
 
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(title="BroAI Humanizer API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,6 +22,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ... resto del codice (endpoint, ecc.)
+
 
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config", "production.yaml")
@@ -35,12 +41,15 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=False,  # ← cambia da True a False
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 class HumanizeRequest(BaseModel):
