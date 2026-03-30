@@ -13,16 +13,13 @@ TYPO_DICT = load_dictionary(
 # Pre-sort longest phrases first so "per favore" matches before "per"
 _TYPO_KEYS_SORTED = sorted(TYPO_DICT.keys(), key=len, reverse=True)
 
-FILLERS = ["uh", "um", "like", "you know", "i mean", "kinda", "honestly", "wait"]
-
-
 def inject_noise(text: str, level: float = 0.1, seed: int = None) -> str:
     """
     Inject realistic noise into text.
 
     Strategy:
       1. First pass — replace multi-word phrases from the typo dict (e.g. "per favore" → "pls")
-      2. Second pass — word-by-word: typo | filler | drop on remaining tokens
+      2. Second pass — word-by-word: typo | drop on remaining tokens
     """
     if seed is not None:
         random.seed(seed)
@@ -46,15 +43,11 @@ def inject_noise(text: str, level: float = 0.1, seed: int = None) -> str:
     for word in words:
         if random.random() < level:
             action = weighted_choice([
-                ("typo",   0.5),
-                ("filler", 0.3),
-                ("drop",   0.2),
+                ("typo", 0.7),
+                ("drop", 0.3),
             ])
             if action == "typo":
                 result.append(_apply_typo(word))
-            elif action == "filler":
-                result.append(word)
-                result.append(random.choice(FILLERS))
             # "drop" → word omitted intentionally
         else:
             result.append(word)
